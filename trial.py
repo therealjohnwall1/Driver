@@ -103,13 +103,14 @@ while running:
         if event.type == KEYDOWN:
             
             if event.key == K_LEFT and player.rect.center[0] > left_lane:
-                player.rect.x -= 20
+                player.rect.x -= 40
             elif event.key == K_RIGHT and player.rect.center[0] < right_lane:
-                player.rect.x += 20
+                player.rect.x += 40
             elif event.key == K_UP:
-                player.rect.y -= 20
+                # player.rect.y -= 20
+                speed +=1
             elif event.key == K_DOWN:
-                player.rect.y += 20
+                speed -=1
                 
             # check if there's a side swipe collision after changing lanes
             for vehicle in vehicle_group:
@@ -149,7 +150,7 @@ while running:
     player_group.draw(screen)
     
     # add a vehicle
-    if len(vehicle_group) < 2:
+    if len(vehicle_group) < 5:
         
         # ensure there's enough gap between vehicles
         add_vehicle = True
