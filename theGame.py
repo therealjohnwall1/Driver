@@ -16,6 +16,8 @@ class Driver:
         self.h = h
         self.screen = pygame.display.set_mode((w, h))
         pygame.display.set_caption('Car Game')
+        self.player_group = pygame.sprite.Group()
+        self.vehicle_group = pygame.sprite.Group()
 
         self.reset()
 
