@@ -66,6 +66,8 @@ player_group = pygame.sprite.Group()
 vehicle_group = pygame.sprite.Group()
 
 # create the player's car
+player_x = 250+150+100
+player_y = 400+150
 player = PlayerVehicle(player_x, player_y)
 player_group.add(player)
 
@@ -79,9 +81,6 @@ for image_filename in image_filenames:
 # load the crash image
 crash = pygame.image.load('images/crash.png')
 crash_rect = crash.get_rect()
-
-
-
 
 
 #game loop
@@ -114,6 +113,12 @@ while running:
     for y in range(marker_height * -2, height, marker_height * 2):
         pygame.draw.rect(screen, white, (left_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
         pygame.draw.rect(screen, white, (center_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
+
+
+    # draw the player's car
+    player_group.draw(screen)
+
+
 
     pygame.display.update()
 

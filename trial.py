@@ -98,19 +98,13 @@ while running:
     for event in pygame.event.get():
         if event.type == QUIT:
             running = False
-            
         # move the player's car using the left/right arrow keys
         if event.type == KEYDOWN:
             
             if event.key == K_LEFT and player.rect.center[0] > left_lane:
-                player.rect.x -= 40
+                player.rect.x -= 100
             elif event.key == K_RIGHT and player.rect.center[0] < right_lane:
-                player.rect.x += 40
-            elif event.key == K_UP:
-                # player.rect.y -= 20
-                speed +=1
-            elif event.key == K_DOWN:
-                speed -=1
+                player.rect.x += 100
                 
             # check if there's a side swipe collision after changing lanes
             for vehicle in vehicle_group:
@@ -150,7 +144,7 @@ while running:
     player_group.draw(screen)
     
     # add a vehicle
-    if len(vehicle_group) < 5:
+    if len(vehicle_group) < 2:
         
         # ensure there's enough gap between vehicles
         add_vehicle = True

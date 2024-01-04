@@ -1,0 +1,7 @@
+1. make game oop so agent can run it
+2. make agent get
+    state
+    remember
+    train
+    get action on state
+    
