@@ -179,7 +179,7 @@ while running:
     
     # draw the vehicles
     vehicle_group.draw(screen)
-    
+    33
     # display the score
     font = pygame.font.Font(pygame.font.get_default_font(), 16)
     text = font.render('Score: ' + str(score), True, white)
