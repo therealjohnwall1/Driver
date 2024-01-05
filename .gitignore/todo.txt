@@ -1,5 +1,0 @@
-finish td
-    1. match dotted road lines to speed
-    2. add more cars and randomize cars, not only vans
-        many cars, one lane will be open
-    3. start working on gettting state of game
