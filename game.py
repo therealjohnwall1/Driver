@@ -20,7 +20,7 @@ class Driver:
 
     def __init__(self, w = 500, h = 500):
         self.w = w
-        self.h = h
+        self.height = h
         self.screen = pygame.display.set_mode((w, h))
         pygame.display.set_caption('Car Game')
         self.player_group = pygame.sprite.Group()
@@ -105,12 +105,12 @@ class Driver:
                 lane = random.choice(self.lanes)
                 # select a random vehicle image
                 image = pygame.image.load('images/' + random.choice(image_filenames))
-                vehicle = Vehicle(image, lane, self.h / -2)
+                vehicle = Vehicle(image, lane, self.height / -2)
                 self.vehicle_group.add(vehicle)
         # move the vehicles
         for vehicle in self.vehicle_group:
             vehicle.rect.y += self.speed
-            if vehicle.rect.top > self.h:
+            if vehicle.rect.top > self.height:
                 vehicle.kill()
                 self.score += 1
 
@@ -118,6 +118,9 @@ class Driver:
      
 
     def did_crash(self,player,vehicle_group):
+        #check if touch car or go off road
+        if player.rect.center[0] < LEFT_LANE or player.rect.center[0] > RIGHT_LANE:
+            self.gameover = True
         crash_rect = pygame.image.load('images/crash.png').get_rect()
         if pygame.sprite.spritecollide(player, vehicle_group, True):
             self.gameover = True
@@ -157,9 +160,9 @@ class Driver:
         marker_height = 50
         # lane coordinates
         # road and edge markers
-        road = (100, 0, road_width, self.h)
-        left_edge_marker = (95, 0, marker_width, self.h)
-        right_edge_marker = (395, 0, marker_width, self.h)
+        road = (100, 0, road_width, self.height)
+        left_edge_marker = (95, 0, marker_width, self.height)
+        right_edge_marker = (395, 0, marker_width, self.height)
         # for animating movement of the lane markers
         lane_marker_move_y = 0
 
@@ -172,12 +175,20 @@ class Driver:
         pygame.draw.rect(self.screen, yellow, right_edge_marker)
         # draw the lane markers
 
-        self.shift += self.speed*0.5
+        #has delay
+        # self.shift += self.speed*0.5
+
+        # lane_marker_move_y += self.speed * 2
+        # if lane_marker_move_y >= marker_height * 2:
+        #     lane_marker_move_y = 0
+        
+        # for y in range(marker_height * -2, self.height + marker_height * 2, marker_height * 2):
+        #     pygame.draw.rect(self.screen, white, (LEFT_LANE + 45, y + lane_marker_move_y + self.shift % self.height, marker_width, marker_height))
+        #     pygame.draw.rect(self.screen, white, (CENTER_LANE + 45, y + lane_marker_move_y + self.shift % self.height, marker_width, marker_height))
 
         lane_marker_move_y += self.speed * 2
         if lane_marker_move_y >= marker_height * 2:
             lane_marker_move_y = 0
-        
-        for y in range(marker_height * -2, self.h + marker_height * 2, marker_height * 2):
-            pygame.draw.rect(self.screen, white, (LEFT_LANE + 45, y + lane_marker_move_y + self.shift % self.h, marker_width, marker_height))
-            pygame.draw.rect(self.screen, white, (CENTER_LANE + 45, y + lane_marker_move_y + self.shift % self.h, marker_width, marker_height))
+        for y in range(marker_height * -2, self.height, marker_height * 2):
+            pygame.draw.rect(self.screen, white, (LEFT_LANE + 45, y + lane_marker_move_y, marker_width, marker_height))
+            pygame.draw.rect(self.screen, white, (CENTER_LANE + 45, y + lane_marker_move_y, marker_width, marker_height))
