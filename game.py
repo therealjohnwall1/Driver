@@ -58,6 +58,7 @@ class Driver:
     
     def model_move(self,action):
         if action == [0,0,0,0,1]: #right lane
+            
             self.player.rect.x += 100
         elif action == [0,0,0,1,0]: # left lane
             self.player.rect.x -= 100

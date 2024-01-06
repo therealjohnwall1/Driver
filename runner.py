@@ -20,6 +20,7 @@ class Runner:
         self.optim = torch.optim.Adam(self.model.parameters(), lr=LR)
         self.criterion = nn.MSELoss()
         self.num_games = 10
+        self.memory = deque(maxlen=MAX_MEM)
         #change later
 
     def train(self):
@@ -33,7 +34,7 @@ class Runner:
             old_state = runner.get_state(game)
             final_move = runner.move(old_state)
 
-            reward, game_over, score = self.game.step(final_move)
+            reward, game_over, score = game.step(final_move)
             new_state = runner.get_state(game)
 
             runner.short_mem(old_state,final_move,reward,new_state,game_over)
@@ -41,7 +42,7 @@ class Runner:
             runner.mem_append(old_state, final_move, reward, new_state,game_over)
             
             if game_over:
-                self.game.reset()
+                game.reset()
                 runner.num_games +=1
                 runner.long_mem()
 
@@ -69,8 +70,9 @@ class Runner:
             lane = 300
 
         #lane 1 status
+        dist1,dist2,dist3 = -1000,-1000,-1000
         for vehicle in game.vehicle_group:
-            dist1,dist2,dist3 = -1000,-1000,-1000 #-1000 -> no car in lane
+             #-1000 -> no car in lane
             if vehicle.rect.x == LEFT_LANE:
                 dist1 = vehicle.rect.y - game.player.rect.y
             if vehicle.rect.x == CENTER_LANE:
@@ -88,7 +90,7 @@ class Runner:
         self.memory.append((state,action,reward,next_state,game_over))
     
     def short_mem(self,state,action,reward,next_state,done):
-        self.epoch(state, action, reward, next_state, done)
+        self.train_step(state, action, reward, next_state, done)
 
     def long_mem(self):
         if len(self.memory) > BATCH:
@@ -98,7 +100,7 @@ class Runner:
         states,actions,rewards,next_states,dones = zip(*sample)
         #groups all states,...,dones together from sample
         #appending batches to memory
-        self.memory.append((states,actions,rewards,next_states,dones))
+        self.train_step(states,actions,rewards,next_states,dones)
        
     def move(self,state):
         #random: exploration vs exploitation
@@ -120,7 +122,7 @@ class Runner:
 
     #training methods
     #epoch
-    def train(self, state, action, reward, next_state, done):
+    def train_step(self, state, action, reward, next_state, done):
         state = torch.tensor(state,dtype=torch.float)
         next_state = torch.tensor(next_state, dtype=torch.float)
         action = torch.tensor(action, dtype=torch.long)
@@ -152,11 +154,11 @@ class Runner:
             # preds[argmax(action)] = Q_new
                 
             #backpropagation
-            self.optimizer.zero_grad()
+            self.optim.zero_grad()
             loss = self.criterion(target, pred)
             loss.backward()
 
-            self.optimizer.step()
+            self.optim.step()
 
     
 if __name__ == "__main__":
