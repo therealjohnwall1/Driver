@@ -10,8 +10,10 @@ class Agent:
         game = Driver()
         while True:
             reward, gameOver, score = game.step()
+            
             if gameOver:
                 game.reset()
+
 
     def getState(self):
         #state will take account

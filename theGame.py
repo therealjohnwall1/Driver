@@ -22,9 +22,12 @@ class Driver:
         self.center_lane = 250
         self.right_lane = 350
         self.lanes = [self.left_lane, self.center_lane, self.right_lane]
+        #testing
+        self.shift = 0
         self.reset()
 
     def reset(self): #innit state of game
+        self.player_group.empty()
         self.score = 0
         self.speed = 2
         self.gameover = False
@@ -81,14 +84,12 @@ class Driver:
 
         #add cars
         self.placeCars()
-        
         self.updateUi()
 
         return reward, self.gameover, self.score
         
 
     def placeCars(self):
-        
         image_filenames = ['pickup_truck.png', 'semi_trailer.png', 'taxi.png', 'van.png']
         vehicle_images = []
         for image_filename in image_filenames:
@@ -120,12 +121,36 @@ class Driver:
         if pygame.sprite.spritecollide(player, vehicle_group, True):
             self.gameover = True
             crash_rect.center = [player.rect.center[0], player.rect.top]
-
+            
         #checking if player hits from the side
         
         return self.gameover
         
     def updateUi(self):
+        self.drawRoad() #draw road
+        #place player car
+        self.player_group.draw(self.screen)
+        self.humanMove() # testing 
+        #place vehicles
+        self.vehicle_group.draw(self.screen)
+        
+        #display score on screen
+        font = pygame.font.Font(pygame.font.get_default_font(), 16)
+        text = font.render('Score: ' + str(self.score), True, white)
+        text_rect = text.get_rect()
+        text_rect.center = (50, 400)
+        self.screen.blit(text, text_rect)
+        
+        #display speed on screen
+        speed_text = font.render('Speed: ' + str(self.speed), True, white)
+        speed_rect = speed_text.get_rect()
+        speed_rect.center = (50, 420)
+        self.screen.blit(speed_text, speed_rect)
+        
+        pygame.display.flip()        
+
+
+    def drawRoad(self):
         road_width = 300
         marker_width = 10
         marker_height = 50
@@ -145,26 +170,13 @@ class Driver:
         pygame.draw.rect(self.screen, yellow, left_edge_marker)
         pygame.draw.rect(self.screen, yellow, right_edge_marker)
         # draw the lane markers
+
+        self.shift += self.speed*0.5
+
         lane_marker_move_y += self.speed * 2
         if lane_marker_move_y >= marker_height * 2:
             lane_marker_move_y = 0
         
-        for y in range(marker_height * -2, self.h, marker_height * 2):
-            pygame.draw.rect(self.screen, white, (self.left_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
-            pygame.draw.rect(self.screen, white, (self.center_lane + 45, y + lane_marker_move_y, marker_width, marker_height))
-
-        #place player car
-        self.player_group.draw(self.screen)
-        self.humanMove() # testing 
-        #place vehicles
-        self.vehicle_group.draw(self.screen)
-        
-        #display score on screen
-        font = pygame.font.Font(pygame.font.get_default_font(), 16)
-        text = font.render('Score: ' + str(self.score), True, white)
-        text_rect = text.get_rect()
-        text_rect.center = (50, 400)
-        self.screen.blit(text, text_rect)
-        
-                
-        pygame.display.flip()        
+        for y in range(marker_height * -2, self.h + marker_height * 2, marker_height * 2):
+            pygame.draw.rect(self.screen, white, (self.left_lane + 45, y + lane_marker_move_y + self.shift % self.h, marker_width, marker_height))
+            pygame.draw.rect(self.screen, white, (self.center_lane + 45, y + lane_marker_move_y + self.shift % self.h, marker_width, marker_height))
