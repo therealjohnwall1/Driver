@@ -11,7 +11,7 @@ class Lmodel(nn.Module):
         self.l1 = nn.Linear(features,hidden)
         self.l2 = nn.Linear(hidden,labels)
     
-    def forward(x):
+    def forward(self,x):
         x = F.relu(self.l1(x))
         x = self.l2(x)
         return x
@@ -24,6 +24,8 @@ class Lmodel(nn.Module):
 
         file_name = os.path.join(model_folder_path, file_name)
         torch.save(self.state_dict(), file_name)
+    
+    
     
 
     

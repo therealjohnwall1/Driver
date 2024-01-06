@@ -56,7 +56,7 @@ class Driver:
         if keys[pygame.K_DOWN]:
             self.speed -= 0.25
     
-    def move(self,action):
+    def model_move(self,action):
         if action == [0,0,0,0,1]: #right lane
             self.player.rect.x += 100
         elif action == [0,0,0,1,0]: # left lane
@@ -68,7 +68,7 @@ class Driver:
         else: # slow down [0,1,0,0,0]
             self.speed -= 1 
 
-    def step(self):
+    def step(self,action):
         # user input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -89,6 +89,7 @@ class Driver:
 
         
         self.placeCars()
+        self.model_move(action)
         self.updateUi()
 
         return reward, self.gameover, self.score
@@ -134,6 +135,7 @@ class Driver:
         self.drawRoad() #draw road
         #place player car
         self.player_group.draw(self.screen)
+        
         self.human_move() # testing 
         #place vehicles
         self.vehicle_group.draw(self.screen)
