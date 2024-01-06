@@ -1,6 +1,12 @@
 import pygame
 import random
 from cars import Vehicle, PlayerVehicle
+import random
+
+
+LEFT_LANE = 150
+CENTER_LANE = 250
+RIGHT_LANE = 350
 
 gray = (100, 100, 100)  
 green = (76, 208, 56)
@@ -11,6 +17,7 @@ yellow = (255, 232, 0)
 pygame.init()
 
 class Driver:
+
     def __init__(self, w = 500, h = 500):
         self.w = w
         self.h = h
@@ -18,10 +25,8 @@ class Driver:
         pygame.display.set_caption('Car Game')
         self.player_group = pygame.sprite.Group()
         self.vehicle_group = pygame.sprite.Group()
-        self.left_lane = 150
-        self.center_lane = 250
-        self.right_lane = 350
-        self.lanes = [self.left_lane, self.center_lane, self.right_lane]
+
+        self.lanes = [LEFT_LANE, CENTER_LANE, RIGHT_LANE]
         #testing
         self.shift = 0
         self.reset()
@@ -35,8 +40,8 @@ class Driver:
         self.player_group.add(self.player)
         self.vehicle_group.empty()
 
-
-    def humanMove(self):
+#for testing
+    def human_move(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -72,7 +77,7 @@ class Driver:
         
         #move car based on model output
         # self.move(action)
-
+                
         #check game status
         reward = 0
         if self.gameover:
@@ -82,7 +87,7 @@ class Driver:
         else:
             reward = 10
 
-        #add cars
+        
         self.placeCars()
         self.updateUi()
 
@@ -91,10 +96,6 @@ class Driver:
 
     def placeCars(self):
         image_filenames = ['pickup_truck.png', 'semi_trailer.png', 'taxi.png', 'van.png']
-        vehicle_images = []
-        for image_filename in image_filenames:
-            image = pygame.image.load('images/' + image_filename)
-        vehicle_images.append(image)
         if len(self.vehicle_group)<3:
             add_car = True
             for vehicle in self.vehicle_group: #ensure car can fit
@@ -103,7 +104,7 @@ class Driver:
             if add_car:
                 lane = random.choice(self.lanes)
                 # select a random vehicle image
-                image = random.choice(vehicle_images)
+                image = pygame.image.load('images/' + random.choice(image_filenames))
                 vehicle = Vehicle(image, lane, self.h / -2)
                 self.vehicle_group.add(vehicle)
         # move the vehicles
@@ -114,7 +115,7 @@ class Driver:
                 self.score += 1
 
         self.did_crash(self.player,self.vehicle_group)
-
+     
 
     def did_crash(self,player,vehicle_group):
         crash_rect = pygame.image.load('images/crash.png').get_rect()
@@ -130,7 +131,7 @@ class Driver:
         self.drawRoad() #draw road
         #place player car
         self.player_group.draw(self.screen)
-        self.humanMove() # testing 
+        self.human_move() # testing 
         #place vehicles
         self.vehicle_group.draw(self.screen)
         
@@ -178,5 +179,5 @@ class Driver:
             lane_marker_move_y = 0
         
         for y in range(marker_height * -2, self.h + marker_height * 2, marker_height * 2):
-            pygame.draw.rect(self.screen, white, (self.left_lane + 45, y + lane_marker_move_y + self.shift % self.h, marker_width, marker_height))
-            pygame.draw.rect(self.screen, white, (self.center_lane + 45, y + lane_marker_move_y + self.shift % self.h, marker_width, marker_height))
+            pygame.draw.rect(self.screen, white, (LEFT_LANE + 45, y + lane_marker_move_y + self.shift % self.h, marker_width, marker_height))
+            pygame.draw.rect(self.screen, white, (CENTER_LANE + 45, y + lane_marker_move_y + self.shift % self.h, marker_width, marker_height))
