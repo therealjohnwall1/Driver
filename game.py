@@ -58,16 +58,18 @@ class Driver:
     
     def model_move(self,action):
         if action == [0,0,0,0,1]: #right lane
-            self.player.rect.x += 100
+            if self.player.rect.center[0] < RIGHT_LANE:
+                self.player.rect.x += 100
         elif action == [0,0,0,1,0]: # left lane
-            if self.player.rect.center[0] < LEFT_LANE:
+            if self.player.rect.center[0] > LEFT_LANE:
                 self.player.rect.x -= 100
         elif action == [0,0,1,0,0]: # stay in lane
             pass
         elif action == [1,0,0,0,0]: # speed up/accel:
             self.speed += 1
         else: # slow down [0,1,0,0,0]
-            self.speed -= 1 
+            if self.speed > 1:
+                self.speed -= 1 
 
     def step(self,action):
         # user input
@@ -84,7 +86,7 @@ class Driver:
         if self.gameover:
             reward = -10
             return reward,self.gameover,self.score
-        
+         
         else:
             reward = 10
 

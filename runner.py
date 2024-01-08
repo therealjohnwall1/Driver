@@ -24,9 +24,6 @@ class Runner:
         #change later
 
     def train(self):
-        mlt_scores = []
-        m_scores = []
-        t_score = 0
         game = Driver()
         runner = Runner()
         max_score = 0
@@ -52,11 +49,7 @@ class Runner:
 
                 print(f"Game {runner.num_games} Score: {score} Record: {max_score}")
 
-                mlt_scores.append(score)
-                t_score += score
-                m_scores.append(t_score/runner.num_games)
-                plot(mlt_scores,m_scores)
-                
+            
 
 
     def get_state(self,game):
